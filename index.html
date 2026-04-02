@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Proliance Daily Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--fire:#DC2626;--fire-d:#B91C1C;--fire-l:#FEE2E2;--fire-xl:#FEF2F2;
+--coral:#F97316;--coral-l:#FFF7ED;
+--amber:#F59E0B;--amber-d:#D97706;--amber-l:#FEF3C7;--amber-xl:#FFFBEB;
+--gold:#EAB308;--gold-l:#FEF9C3;
+--emerald:#059669;--emerald-d:#047857;--emerald-l:#D1FAE5;--emerald-xl:#ECFDF5;
+--sky:#0284C7;--sky-d:#0369A1;--sky-l:#E0F2FE;
+--violet:#7C3AED;--violet-d:#6D28D9;--violet-l:#EDE9FE;
+--rose:#E11D48;--rose-l:#FFE4E6;
+--teal:#0D9488;--teal-l:#CCFBF1;
+--bg:#FAF9F7;--bg2:#F5F3F0;--card:#FFFFFF;--border:#E8E4DF;--border-l:#F0EDE8;
+--text:#1C1917;--text2:#57534E;--text3:#A8A29E;--text4:#D6D3D1;
+--cream:#FEFCF8;
+--shadow-xs:0 1px 2px rgba(28,25,23,.04);
+--shadow:0 1px 3px rgba(28,25,23,.06),0 1px 2px rgba(28,25,23,.04);
+--shadow-md:0 4px 12px rgba(28,25,23,.06),0 2px 4px rgba(28,25,23,.03);
+--shadow-lg:0 12px 32px rgba(28,25,23,.08),0 4px 8px rgba(28,25,23,.04);
+--shadow-glow-fire:0 4px 16px rgba(220,38,38,.2);
+--shadow-glow-amber:0 4px 16px rgba(245,158,11,.2);
+--shadow-glow-emerald:0 4px 16px rgba(5,150,105,.2);
+--r:10px;--r-sm:7px;--r-lg:14px;--r-xl:18px;--r-full:9999px;
+--grad-fire:linear-gradient(135deg,#DC2626,#F97316,#EAB308);
+--grad-fire-h:linear-gradient(135deg,#B91C1C,#EA580C,#CA8A04);
+--grad-amber:linear-gradient(135deg,#F59E0B,#EAB308);
+--grad-emerald:linear-gradient(135deg,#059669,#0D9488);
+}
+html{font-size:14.5px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:700;line-height:1.2}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:none;font-size:.875rem}
+input,textarea,select{font-family:'DM Sans',sans-serif;font-size:.875rem;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;background:var(--cream);color:var(--text);width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--fire);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+textarea{resize:vertical;min-height:60px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2357534E' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ===== LAYOUT ===== */
+.app{display:flex;flex-direction:column;min-height:100vh;padding-bottom:64px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--card);border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:200}
+.top-bar-left h1{font-size:1.4rem;background:var(--grad-fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.top-bar-left .subtitle{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-top:-2px}
+.top-bar-right{display:flex;gap:8px}
+.content-wrap{display:flex;flex:1}
+.main-col{flex:1;padding:20px 24px;max-width:calc(100% - 330px);overflow-y:auto}
+.side-col{width:330px;position:fixed;right:0;top:57px;bottom:64px;border-left:1.5px solid var(--border);background:var(--card);display:flex;flex-direction:column;z-index:100}
+.break-bar{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--card);border-top:1.5px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:16px;z-index:200}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 18px;border-radius:var(--r-full);font-weight:600;font-size:.82rem;transition:all .18s;letter-spacing:.01em;white-space:nowrap}
+.btn-fire{background:var(--grad-fire);color:#fff;box-shadow:var(--shadow-glow-fire)}
+.btn-fire:hover{background:var(--grad-fire-h);box-shadow:0 6px 20px rgba(220,38,38,.3);transform:translateY(-1px)}
+.btn-emerald{background:var(--grad-emerald);color:#fff;box-shadow:var(--shadow-glow-emerald)}
+.btn-emerald:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(5,150,105,.3)}
+.btn-amber{background:var(--grad-amber);color:#fff;box-shadow:var(--shadow-glow-amber)}
+.btn-amber:hover{transform:translateY(-1px)}
+.btn-sky{background:var(--sky);color:#fff}
+.btn-sky:hover{background:var(--sky-d)}
+.btn-violet{background:var(--violet);color:#fff}
+.btn-ghost{color:var(--text2);padding:7px 14px;border-radius:var(--r-full);border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--bg2);border-color:var(--text3)}
+.btn-ghost.active{background:var(--grad-fire);color:#fff;border-color:transparent;box-shadow:var(--shadow-glow-fire)}
+.btn-danger{background:var(--fire);color:#fff;border-radius:var(--r-full)}
+.btn-danger:hover{background:var(--fire-d)}
+.btn-sm{padding:5px 12px;font-size:.75rem}
+.btn-icon{width:34px;height:34px;padding:0;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;color:var(--text3);font-size:1rem}
+.btn-icon:hover{background:var(--bg2);color:var(--fire)}
+
+/* ===== CARD ===== */
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow-md)}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-hd h3{font-size:1rem}
+.card-hd .label{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.card+.card{margin-top:14px}
+
+/* ===== QUOTE ===== */
+.quote-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:24px 32px;margin-bottom:20px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.quote-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad-fire)}
+.quote-mark{font-family:'Playfair Display',serif;font-size:3rem;color:var(--amber);line-height:1;margin-bottom:4px}
+.quote-text{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;line-height:1.65;color:var(--text);max-width:640px;margin:0 auto}
+.quote-src{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-top:8px}
+
+/* ===== ONBOARDING ===== */
+.overlay{position:fixed;inset:0;background:rgba(28,25,23,.5);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal{background:var(--card);border-radius:var(--r-xl);padding:40px;max-width:460px;width:92%;box-shadow:var(--shadow-lg);text-align:center;animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:none}}
+.modal h2{font-size:1.5rem;margin-bottom:6px}
+.modal p{color:var(--text2);font-size:.9rem;margin-bottom:20px}
+.modal input{margin-bottom:14px;text-align:center;font-size:1rem}
+
+/* ===== LOCK-IN ===== */
+.lockin-wrap{max-width:520px;margin:40px auto;text-align:center}
+.lockin-wrap h2{font-size:1.6rem;margin-bottom:6px}
+.lockin-wrap p{color:var(--text2);margin-bottom:24px}
+.lockin-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.lockin-num{width:36px;height:36px;border-radius:50%;background:var(--grad-fire);color:#fff;font-family:'Playfair Display',serif;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lockin-row input{flex:1;font-size:.95rem;padding:12px 16px}
+.lockin-btn{width:100%;padding:14px;font-size:1rem;margin-top:10px}
+
+/* ===== METRICS BAR ===== */
+.metrics-bar{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:18px 22px;margin-bottom:16px;box-shadow:var(--shadow)}
+.metrics-bar .mb-hd{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.metrics-row{display:flex;gap:10px;flex-wrap:wrap}
+.metric-pill{flex:1;min-width:120px;display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--border-l);border-radius:var(--r-full);padding:6px 14px 6px 16px}
+.metric-pill label{font-size:.72rem;font-weight:600;color:var(--text2);white-space:nowrap}
+.metric-pill input{border:none;background:transparent;text-align:right;font-size:1.05rem;font-weight:700;padding:4px 0;width:50px;font-family:'Playfair Display',serif}
+.metric-pill input:focus{box-shadow:none}
+.metrics-nudge{font-size:.78rem;color:var(--amber-d);margin-top:10px;font-weight:500}
+
+/* ===== STATS ROW ===== */
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+.stat-box{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 10px;text-align:center;box-shadow:var(--shadow-xs);transition:transform .15s,box-shadow .15s}
+.stat-box:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-val{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:800;line-height:1}
+.stat-lbl{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-top:3px}
+.c-fire .stat-val{color:var(--fire)}.c-sky .stat-val{color:var(--sky)}.c-amber .stat-val{color:var(--amber)}.c-emerald .stat-val{color:var(--emerald)}.c-violet .stat-val{color:var(--violet)}.c-rose .stat-val{color:var(--rose)}
+
+/* ===== TABS ===== */
+.tab-row{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px}
+.tab-btn{padding:8px 18px;font-weight:600;font-size:.8rem;border-radius:var(--r-full);color:var(--text2);border:1.5px solid transparent;transition:all .18s;white-space:nowrap}
+.tab-btn:hover{background:var(--bg2)}
+.tab-btn.active{background:var(--grad-fire);color:#fff;box-shadow:var(--shadow-glow-fire);border-color:transparent}
+.tab-panel{display:none;animation:fadeUp .25s ease}
+.tab-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ===== GOALS CARD ===== */
+.goals-inner{display:flex;gap:20px;align-items:flex-start}
+.goals-ring{flex-shrink:0;position:relative;width:90px;height:90px}
+.goals-ring svg{transform:rotate(-90deg)}
+.goals-ring .ring-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem}
+.goals-list{flex:1}
+.goal-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);margin-bottom:4px;transition:background .15s;cursor:pointer}
+.goal-row:hover{background:var(--bg2)}
+.goal-row.done{background:var(--emerald-xl)}
+.goal-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:.75rem;color:transparent}
+.goal-row.done .goal-check{background:var(--emerald);border-color:var(--emerald);color:#fff}
+.goal-text{font-size:.9rem;font-weight:500}
+.goal-row.done .goal-text{text-decoration:line-through;color:var(--text3)}
+
+/* ===== TASKS ===== */
+.task-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border-l)}
+.task-item:last-child{border-bottom:none}
+.task-cb{width:17px;height:17px;accent-color:var(--emerald);flex-shrink:0}
+.task-input{border:none;background:transparent;flex:1;font-size:.86rem;padding:2px 0}
+.task-input:focus{box-shadow:none}
+.task-input.done{text-decoration:line-through;color:var(--text3)}
+.tag-pill{display:inline-block;padding:2px 9px;border-radius:var(--r-full);font-size:.65rem;font-weight:700;letter-spacing:.02em}
+.tag-sel{width:auto;font-size:.68rem;padding:3px 22px 3px 8px;border-radius:var(--r-full);font-weight:600;background-position:right 6px center}
+.add-row{display:flex;gap:6px;margin-top:10px}
+.add-row input{flex:1}
+.tag-editor{margin-top:10px;padding:12px;background:var(--bg2);border-radius:var(--r-sm)}
+.tag-ed-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.tag-ed-row input[type="text"]{flex:1;font-size:.8rem;padding:6px 10px}
+.tag-ed-row input[type="color"]{width:30px;height:28px;padding:1px;border:1px solid var(--border);border-radius:4px;cursor:pointer}
+
+/* ===== LEADS ===== */
+.lead-row{padding:8px 0;border-bottom:1px solid var(--border-l)}
+.lead-row:last-child{border-bottom:none}
+.lead-name-inp{font-weight:600;border:none;background:transparent;padding:2px 0;font-size:.88rem}
+.lead-name-inp:focus{box-shadow:none}
+.lead-notes-inp{border:none;background:transparent;padding:2px 0;font-size:.78rem;color:var(--text2)}
+.lead-notes-inp:focus{box-shadow:none}
+
+/* ===== PIPELINE ===== */
+.pipe-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.pipe-card:hover{box-shadow:var(--shadow-md)}
+.pipe-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.pipe-name{font-weight:700;font-size:1rem;flex:1}
+.pipe-badges{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.badge{font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:var(--r-full);letter-spacing:.02em}
+.badge-sales{background:var(--fire-l);color:var(--fire)}
+.badge-office{background:var(--violet-l);color:var(--violet)}
+.badge-pct{background:var(--amber-l);color:var(--amber-d)}
+.badge-stage{background:var(--emerald-l);color:var(--emerald-d)}
+.pipe-info{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--text2);margin-bottom:10px}
+.pipe-info span::before{margin-right:3px}
+.pipe-notes-box{background:var(--bg2);border-radius:var(--r-sm);padding:8px 12px;font-size:.8rem;color:var(--text2);font-style:italic;margin-bottom:10px}
+.step-track{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.step-dot{padding:3px 8px;border-radius:5px;font-size:.62rem;font-weight:700;background:var(--bg2);color:var(--text3);cursor:pointer;transition:all .15s;border:1px solid var(--border-l);white-space:nowrap}
+.step-dot.done{background:var(--emerald);color:#fff;border-color:var(--emerald)}
+.step-dot.current{background:var(--amber-l);color:var(--amber-d);border-color:var(--amber);animation:stepPulse 2s infinite}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)}50%{box-shadow:0 0 0 4px rgba(245,158,11,0)}}
+.pipe-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pipe-form .full{grid-column:1/-1}
+.pipe-stats{display:flex;gap:16px;margin-top:14px}
+.pipe-stat{font-size:.82rem;font-weight:600;color:var(--text2)}
+.pipe-stat strong{color:var(--text);font-size:1.1rem;font-family:'Playfair Display',serif}
+
+/* ===== WINS ===== */
+.win-card{background:linear-gradient(135deg,var(--amber-xl),var(--gold-l));border:1.5px solid var(--amber);border-radius:var(--r);padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.win-icon{font-size:1.2rem}
+.win-body{flex:1}
+.win-title{font-weight:700;font-size:.88rem}
+.win-meta{font-size:.7rem;color:var(--text2);display:flex;gap:8px;margin-top:1px}
+.quick-wins{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+
+/* ===== TEMPLATES ===== */
+.tmpl-card{padding:14px;border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:all .18s}
+.tmpl-card:hover{border-color:var(--sky);background:var(--sky-l);box-shadow:var(--shadow-md)}
+.tmpl-card h4{font-size:.88rem;margin-bottom:2px}
+.tmpl-card p{font-size:.73rem;color:var(--text2);line-height:1.4}
+.tmpl-preview{background:var(--cream);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:16px;font-size:.84rem;white-space:pre-wrap;line-height:1.65;max-height:320px;overflow-y:auto;margin-top:12px}
+
+/* ===== ARCHIVE ===== */
+.arch-week{border:1.5px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.arch-hd{padding:14px 16px;background:linear-gradient(135deg,var(--amber-xl),var(--gold-l));cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.86rem}
+.arch-hd .arrow{transition:transform .2s;font-size:.8rem}
+.arch-week.open .arch-hd .arrow{transform:rotate(180deg)}
+.arch-body{padding:14px;display:none}
+.arch-week.open .arch-body{display:block}
+.arch-totals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.arch-tot{text-align:center;background:var(--bg2);border-radius:var(--r-sm);padding:10px 6px}
+.arch-tot .at-v{font-family:'Playfair Display',serif;font-weight:800;font-size:1.1rem}
+.arch-tot .at-l{font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--text3);letter-spacing:.04em}
+.arch-day{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-l);font-size:.82rem}
+.arch-day:last-child{border-bottom:none}
+.arch-day input[type="checkbox"]{width:15px;height:15px;accent-color:var(--fire);flex-shrink:0}
+.arch-day-info{flex:1}
+
+/* ===== COACH ===== */
+.coach-hd{padding:16px 18px;border-bottom:1.5px solid var(--border);background:linear-gradient(135deg,var(--fire-xl),var(--amber-xl))}
+.coach-hd .label{font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--fire)}
+.coach-hd h3{font-size:1rem;margin-top:2px}
+.coach-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;max-height:220px}
+.c-msg{font-size:.82rem;line-height:1.5;padding:10px 14px;border-radius:var(--r);animation:msgIn .25s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.c-msg.coach{background:var(--cream);border-left:3px solid var(--amber);align-self:flex-start;max-width:90%}
+.c-msg.user{background:linear-gradient(135deg,var(--fire-xl),var(--amber-xl));align-self:flex-end;max-width:85%;text-align:right}
+.coach-input{padding:12px;border-top:1.5px solid var(--border);display:flex;gap:6px}
+.coach-input input{flex:1;font-size:.82rem;padding:8px 12px}
+
+/* ===== PERSONAL BESTS ===== */
+.pb-section{padding:12px 18px;border-top:1.5px solid var(--border)}
+.pb-section .label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.pb-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.pb-item{background:var(--bg2);border-radius:var(--r-sm);padding:10px;text-align:center}
+.pb-val{font-family:'Playfair Display',serif;font-weight:800;font-size:1.2rem;color:var(--amber)}
+.pb-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--text3);letter-spacing:.03em;margin-top:1px}
+
+/* ===== BREAK BAR ===== */
+.break-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;animation:dotPulse 2s infinite}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.break-dot.work{background:var(--emerald)}
+.break-dot.brk{background:var(--amber)}
+.break-label{font-weight:700;font-size:.85rem;white-space:nowrap;min-width:130px}
+.break-track{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;position:relative}
+.break-fill{height:100%;border-radius:3px;transition:width .5s linear;background:var(--grad-amber)}
+.break-fill.work{background:var(--grad-emerald)}
+.break-time{font-family:'Playfair Display',serif;font-weight:800;font-size:1.1rem;min-width:60px;text-align:right}
+
+/* ===== EOD MODAL ===== */
+.eod-box{max-width:620px;width:94%;max-height:85vh;overflow-y:auto;text-align:left}
+.eod-box h2{font-size:1.3rem;margin-bottom:4px}
+.eod-box .sub{font-size:.85rem;color:var(--text2);margin-bottom:16px}
+.eod-content{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:18px;font-size:.82rem;white-space:pre-wrap;line-height:1.65;max-height:380px;overflow-y:auto;font-family:'DM Sans',monospace;text-align:left}
+.eod-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+/* ===== CONFETTI ===== */
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;z-index:99999;pointer-events:none;animation:confettiFall 1.2s ease-out forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(120px) rotate(720deg)}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1060px){
+.side-col{position:relative;width:100%;top:auto;bottom:auto;border-left:none;border-top:1.5px solid var(--border);max-height:420px}
+.content-wrap{flex-direction:column}
+.main-col{max-width:100%}
+}
+@media(max-width:640px){
+.stats-row{grid-template-columns:repeat(3,1fr)}
+.metrics-row{flex-direction:column}
+.pipe-form{grid-template-columns:1fr}
+.arch-totals{grid-template-columns:repeat(3,1fr)}
+.top-bar{padding:10px 14px}
+.main-col{padding:14px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+(function(){
+"use strict";
+
+/* ========== CONSTANTS ========== */
+var SK="pdc8_st",PK="pdc8_prof";
+var TL=[
+{n:"Zachary Moskowitz",p:"(630) 538-4694"},{n:"Michele Michalak",p:"(773) 272-5892"},
+{n:"Michael Flanders",p:"(708) 551-6303"},{n:"Sean Julian",p:"(312) 485-4973"},
+{n:"Luigi Robles",p:"(708) 789-7440"},{n:"Kevin Faucher",p:"(331) 246-3118"},
+{n:"Christopher Anderson",p:"(708) 804-0008"},{n:"Ethan Marcano",p:"(815) 546-6899"},
+{n:"Fernando Robles",p:"(630) 674-6334"}
+];
+var S_STEPS=["Dial","Screen","Send HW","HW Done","Schedule TR","TR Kit","Cal Invite","Waivers","Pre-TR Touchpoints"];
+var O_STEPS=["Phone Interview","Cal Invite 1-on-1","1-on-1","Cal Invite Final","Final Interview","Send Offer","Paperwork","Orientation","Training"];
+var WIN_TPL=["Hired","Scheduled TR","Sent HW","Onboarded"];
+var DEF_TAGS=[
+{name:"Follow Up",color:"#F59E0B",bg:"#FEF3C7"},{name:"Admin",color:"#7C3AED",bg:"#EDE9FE"},
+{name:"Sourcing",color:"#0284C7",bg:"#E0F2FE"},{name:"Outreach",color:"#DC2626",bg:"#FEE2E2"},
+{name:"Scheduling",color:"#059669",bg:"#D1FAE5"}
+];
+
+/* 145 Quotes */
+var Q=[
+{t:"Whatever you do, work at it with all your heart, as working for the Lord.",s:"Colossians 3:23"},
+{t:"Commit to the Lord whatever you do, and he will establish your plans.",s:"Proverbs 16:3"},
+{t:"The plans of the diligent lead to profit as surely as haste leads to poverty.",s:"Proverbs 21:5"},
+{t:"Do you not know that in a race all the runners run, but only one gets the prize? Run in such a way as to get the prize.",s:"1 Corinthians 9:24"},
+{t:"I can do all things through Christ who strengthens me.",s:"Philippians 4:13"},
+{t:"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",s:"Joshua 1:9"},
+{t:"Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",s:"Galatians 6:9"},
+{t:"For God gave us a spirit not of fear but of power and love and self-discipline.",s:"2 Timothy 1:7"},
+{t:"The hand of the diligent will rule, while the slothful will be put to forced labor.",s:"Proverbs 12:24"},
+{t:"Whatever your hand finds to do, do it with all your might.",s:"Ecclesiastes 9:10"},
+{t:"But those who hope in the Lord will renew their strength. They will soar on wings like eagles.",s:"Isaiah 40:31"},
+{t:"And let us run with perseverance the race marked out for us.",s:"Hebrews 12:1"},
+{t:"The Lord will fight for you; you need only to be still.",s:"Exodus 14:14"},
+{t:"Trust in the Lord with all your heart and lean not on your own understanding.",s:"Proverbs 3:5"},
+{t:"Blessed is the one who perseveres under trial.",s:"James 1:12"},
+{t:"He who began a good work in you will carry it on to completion.",s:"Philippians 1:6"},
+{t:"No discipline seems pleasant at the time, but painful. Later on, however, it produces a harvest of righteousness.",s:"Hebrews 12:11"},
+{t:"The Lord is my strength and my shield; my heart trusts in him.",s:"Psalm 28:7"},
+{t:"Do not despise these small beginnings, for the Lord rejoices to see the work begin.",s:"Zechariah 4:10"},
+{t:"In all toil there is profit, but mere talk tends only to poverty.",s:"Proverbs 14:23"},
+{t:"The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.",s:"Proverbs 13:4"},
+{t:"He who works his land will have abundant food.",s:"Proverbs 12:11"},
+{t:"Sow your seed in the morning, and at evening let your hands not be idle.",s:"Ecclesiastes 11:6"},
+{t:"For we are God's handiwork, created in Christ Jesus to do good works.",s:"Ephesians 2:10"},
+{t:"Be steadfast, immovable, always abounding in the work of the Lord.",s:"1 Corinthians 15:58"},
+{t:"The Lord will make you the head, not the tail.",s:"Deuteronomy 28:13"},
+{t:"Delight yourself in the Lord, and he will give you the desires of your heart.",s:"Psalm 37:4"},
+{t:"The fear of the Lord is the beginning of wisdom.",s:"Proverbs 9:10"},
+{t:"As iron sharpens iron, so one person sharpens another.",s:"Proverbs 27:17"},
+{t:"And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus.",s:"Colossians 3:17"},
+{t:"The blessing of the Lord brings wealth, without painful toil for it.",s:"Proverbs 10:22"},
+{t:"Lazy hands make for poverty, but diligent hands bring wealth.",s:"Proverbs 10:4"},
+{t:"She watches over the affairs of her household and does not eat the bread of idleness.",s:"Proverbs 31:27"},
+{t:"The Lord has done great things for us, and we are filled with joy.",s:"Psalm 126:3"},
+{t:"For I know the plans I have for you, declares the Lord, plans to prosper you.",s:"Jeremiah 29:11"},
+{t:"Not by might nor by power, but by my Spirit, says the Lord.",s:"Zechariah 4:6"},
+{t:"The Lord is near to all who call on him.",s:"Psalm 145:18"},
+{t:"I press on toward the goal to win the prize for which God has called me.",s:"Philippians 3:14"},
+{t:"His master replied, Well done, good and faithful servant!",s:"Matthew 25:21"},
+{t:"Be very careful, then, how you live \u2014 not as unwise but as wise, making the most of every opportunity.",s:"Ephesians 5:15-16"},
+{t:"The Lord gives strength to his people; the Lord blesses his people with peace.",s:"Psalm 29:11"},
+{t:"Arise, for it is your task, and we are with you; be strong and do it.",s:"Ezra 10:4"},
+{t:"He gives power to the faint, and to him who has no might he increases strength.",s:"Isaiah 40:29"},
+{t:"Set your minds on things above, not on earthly things.",s:"Colossians 3:2"},
+{t:"The Lord is my shepherd, I lack nothing.",s:"Psalm 23:1"},
+{t:"Be strong and take heart, all you who hope in the Lord.",s:"Psalm 31:24"},
+{t:"Seek first his kingdom and his righteousness, and all these things will be given to you.",s:"Matthew 6:33"},
+{t:"With God all things are possible.",s:"Matthew 19:26"},
+{t:"The Lord your God is with you, the Mighty Warrior who saves.",s:"Zephaniah 3:17"},
+{t:"My grace is sufficient for you, for my power is made perfect in weakness.",s:"2 Corinthians 12:9"},
+{t:"Teach us to number our days, that we may gain a heart of wisdom.",s:"Psalm 90:12"},
+{t:"In their hearts humans plan their course, but the Lord establishes their steps.",s:"Proverbs 16:9"},
+{t:"Weeping may stay for the night, but rejoicing comes in the morning.",s:"Psalm 30:5"},
+{t:"The righteous person may have many troubles, but the Lord delivers him from them all.",s:"Psalm 34:19"},
+{t:"When you pass through the waters, I will be with you.",s:"Isaiah 43:2"},
+{t:"God is our refuge and strength, an ever-present help in trouble.",s:"Psalm 46:1"},
+{t:"Cast all your anxiety on him because he cares for you.",s:"1 Peter 5:7"},
+{t:"The Lord makes firm the steps of the one who delights in him.",s:"Psalm 37:23"},
+{t:"Consider it pure joy whenever you face trials of many kinds.",s:"James 1:2"},
+{t:"Whoever is faithful in very little is also faithful in much.",s:"Luke 16:10"},
+{t:"From everyone who has been given much, much will be demanded.",s:"Luke 12:48"},
+{t:"The harvest is plentiful but the workers are few.",s:"Matthew 9:37"},
+{t:"Be on your guard; stand firm in the faith; be courageous; be strong.",s:"1 Corinthians 16:13"},
+{t:"A faithful man will abound with blessings.",s:"Proverbs 28:20"},
+{t:"The Lord will fulfill his purpose for me.",s:"Psalm 138:8"},
+{t:"May the favor of the Lord our God rest on us; establish the work of our hands.",s:"Psalm 90:17"},
+{t:"He who gathers crops in summer is a prudent son.",s:"Proverbs 10:5"},
+{t:"The reward for humility and fear of the Lord is riches and honor and life.",s:"Proverbs 22:4"},
+{t:"Prepare your work outside; get everything ready for yourself in the field, and after that build your house.",s:"Proverbs 24:27"},
+{t:"Let your light shine before others, that they may see your good deeds.",s:"Matthew 5:16"},
+{t:"Great is the Lord and most worthy of praise.",s:"Psalm 145:3"},
+{t:"He has made everything beautiful in its time.",s:"Ecclesiastes 3:11"},
+{t:"Strength and dignity are her clothing, and she laughs at the time to come.",s:"Proverbs 31:25"},
+{t:"Do not be anxious about anything, but in every situation, by prayer and petition, present your requests to God.",s:"Philippians 4:6"},
+{t:"A sluggard's appetite is never filled, but the desires of the diligent are fully satisfied.",s:"Proverbs 13:4"},
+{t:"Well done is better than well said.",s:"Proverbs (paraphrased)"},
+{t:"You don't rise to the level of your goals. You fall to the level of your systems.",s:"James Clear"},
+{t:"The Zeigarnik Effect: Unfinished tasks dominate your mind. Start the task \u2014 your brain will nag you to finish it.",s:"Bluma Zeigarnik"},
+{t:"Parkinson's Law: Work expands to fill the time available. Set tighter deadlines.",s:"Cyril Northcote Parkinson"},
+{t:"Identity precedes outcome. Decide who you are first. The results follow.",s:"James Clear"},
+{t:"The person who moves a mountain begins by carrying away small stones.",s:"Confucius"},
+{t:"Discipline is choosing between what you want now and what you want most.",s:"Abraham Lincoln"},
+{t:"You are what you repeatedly do. Excellence is not an act but a habit.",s:"Will Durant"},
+{t:"Loss aversion: People work twice as hard to avoid losing what they have. Protect your streak.",s:"Kahneman & Tversky"},
+{t:"The Pygmalion Effect: When someone believes in your potential, you rise. Be that person for your candidates.",s:"Rosenthal & Jacobson"},
+{t:"Activation energy: The hardest part is starting. Once in motion, momentum carries you.",s:"Chemistry of Productivity"},
+{t:"Every action you take is a vote for the type of person you wish to become.",s:"James Clear"},
+{t:"The 2-Minute Rule: If it takes less than 2 minutes, do it now.",s:"David Allen"},
+{t:"Your environment shapes your behavior more than willpower ever will. Design your workspace for focus.",s:"B.J. Fogg"},
+{t:"The Seinfeld Strategy: Don't break the chain. Every day you show up adds a link.",s:"Jerry Seinfeld"},
+{t:"Implementation intentions: People who plan when and where they'll act are 2-3x more likely to follow through.",s:"Peter Gollwitzer"},
+{t:"The spotlight effect: Nobody is watching you fail as closely as you think. Take the shot.",s:"Thomas Gilovich"},
+{t:"Progress, not perfection. A 1% improvement daily becomes 37x improvement in a year.",s:"Compound Effect"},
+{t:"The Hawthorne Effect: Simply measuring your performance improves it. Track everything.",s:"Elton Mayo"},
+{t:"Intrinsic motivation beats extrinsic every time. Find meaning in the process.",s:"Edward Deci"},
+{t:"Decision fatigue is real. Batch your decisions. Systematize what you can.",s:"Roy Baumeister"},
+{t:"The peak-end rule: People judge experiences by their peak and ending. End your calls strong.",s:"Daniel Kahneman"},
+{t:"Mere exposure effect: The more touchpoints you create, the more trust you build. Follow up.",s:"Robert Zajonc"},
+{t:"Social proof drives action. When you share wins, you give others permission to win too.",s:"Robert Cialdini"},
+{t:"Flow state requires challenge slightly above your skill level. Push past comfortable dials.",s:"Mihaly Csikszentmihalyi"},
+{t:"Habit stacking: Attach a new behavior to an existing one. After I sit down, I make 5 dials.",s:"James Clear"},
+{t:"Self-efficacy is the #1 predictor of success. Believe you can recruit \u2014 because you can.",s:"Albert Bandura"},
+{t:"The fresh start effect: Mondays, new months, new quarters boost motivation. But every dial is a fresh start.",s:"Hengchen Dai"},
+{t:"Kaizen: Small, continuous improvements beat dramatic overhauls every time.",s:"Japanese Philosophy"},
+{t:"Rejection is redirection. Every no brings you statistically closer to a yes.",s:"Sales Principle"},
+{t:"The 80/20 Rule: 20% of your activities produce 80% of results. Protect that 20%.",s:"Pareto Principle"},
+{t:"Cognitive reframing: You're not cold calling \u2014 you're offering someone a career change.",s:"CBT Principle"},
+{t:"Neuroplasticity means your brain physically rewires with practice. The dials get easier.",s:"Neuroscience"},
+{t:"Grit beats talent when talent doesn't work hard. Show up on the hard days.",s:"Angela Duckworth"},
+{t:"Ulysses contracts: Remove future temptation now. Close the tabs. Silence the phone. Dial.",s:"Behavioral Design"},
+{t:"Dopamine is released in anticipation, not just achievement. The pursuit is the reward.",s:"Andrew Huberman"},
+{t:"Variable rewards keep you engaged. Not every call converts \u2014 that's what makes wins electric.",s:"B.F. Skinner"},
+{t:"Automaticity: When dials become automatic, your brain frees up energy for real conversations.",s:"Habit Science"},
+{t:"Mental contrasting: Visualize both the goal AND the obstacle. Realistic optimism outperforms blind positivity.",s:"Gabriele Oettingen"},
+{t:"Pain is information, not a stop sign. Discomfort during growth means you're doing it right.",s:"Growth Mindset"},
+{t:"The reciprocity principle: Give value first. When you help candidates genuinely, they help you back.",s:"Cialdini"},
+{t:"Your reticular activating system filters reality based on what you focus on. Focus on opportunities.",s:"RAS Theory"},
+{t:"The Protege Effect: Teaching someone else what you know deepens your own expertise.",s:"Learning Science"},
+{t:"Confirmation bias works for you when you believe you're a top recruiter. Your brain finds evidence.",s:"Cognitive Psychology"},
+{t:"Growth mindset: Talent is a starting point, not a ceiling. Your recruiting skill has no upper limit.",s:"Carol Dweck"},
+{t:"Micro-commitments compound. 5 more dials. 1 more follow-up. Small edges stack up fast.",s:"Behavioral Economics"},
+{t:"Self-determination theory: Autonomy + competence + relatedness = unstoppable motivation.",s:"Deci & Ryan"},
+{t:"Action creates motivation \u2014 not the other way around. Don't wait to feel ready. Dial.",s:"Behavioral Activation"},
+{t:"Temptation bundling: Only listen to your favorite podcast while prospecting. Pair effort with reward.",s:"Katy Milkman"},
+{t:"The generation effect: You remember things better when you create them yourself. Write your own scripts.",s:"Slamecka & Graf"},
+{t:"Future self continuity: The more connected you feel to your future self, the better decisions you make today.",s:"Hal Hershfield"},
+{t:"Your amygdala triggers fight-or-flight on tough calls. Deep breath, 4 seconds in, 6 out. Back to work.",s:"Neuroscience"},
+{t:"Temporal discounting: We undervalue future rewards. Train your brain to see the compound effect.",s:"Behavioral Economics"},
+{t:"Premack's Principle: Pair something you need to do with something you want to do.",s:"David Premack"},
+{t:"The Dunning-Kruger sweet spot: Knowing you have room to grow is a superpower.",s:"Kruger & Dunning"},
+{t:"The consistency principle: Once someone commits small, they commit big. Get micro-yeses.",s:"Cialdini"},
+{t:"The planning fallacy: Overestimate a day, underestimate 6 months. Play the long game.",s:"Kahneman & Tversky"},
+{t:"Proximity bias: The closer something is, the more likely you'll use it. Keep your tools within reach.",s:"Environmental Design"},
+{t:"Survivorship bias: Don't just study winners. Learn why others stalled.",s:"Abraham Wald"},
+{t:"The endowment effect: People overvalue what they have. Help candidates see what they're missing.",s:"Thaler"},
+{t:"Anchoring effect: The first number sets the frame. Set strong anchors.",s:"Tversky & Kahneman"},
+{t:"Spaced repetition makes learning stick. Review your wins, scripts, and strategies regularly.",s:"Ebbinghaus"},
+{t:"The paradox of choice: Too many options paralyze. Give candidates 2 clear paths, not 10.",s:"Barry Schwartz"},
+{t:"The power of defaults: Make the productive choice the easy choice.",s:"Richard Thaler"},
+{t:"The contrast principle: A great candidate looks even better after 3 misses. Every dial adds contrast.",s:"Cialdini"},
+{t:"Learned industriousness: Reward yourself for effort, not just outcomes, and your work capacity grows.",s:"Robert Eisenberger"},
+{t:"Emotion regulation: Label the feeling. 'I'm nervous about this call' loses its power once named.",s:"Matthew Lieberman"},
+{t:"Pre-commitment devices: Tell someone your goal today. Public commitment increases follow-through by 65%.",s:"Behavioral Science"},
+{t:"The status quo bias keeps people stuck. You're the catalyst for change.",s:"Samuelson & Zeckhauser"},
+{t:"The gap between where you are and where you want to be is called work \u2014 and it's temporary.",s:"Mindset Principle"},
+{t:"Ego depletion is a myth. You don't run out of willpower \u2014 you run out of motivation. Reconnect to your why.",s:"Modern Psychology"}
+];
+
+/* Templates */
+var TMPLS=[
+{name:"Trial Run Kit Email",body:"Hi {candidate_name},\n\nWe're excited to have you join us for a Trial Run at Proliance General Contractors!\n\nHere are your details:\n\nDate: {tr_date}\nTime: {tr_time}\nLocation: {location}\n\nYour Team Lead will be {team_lead_name}, and you can reach them at {team_lead_phone}.\n\nWhat to expect:\n- You'll spend the day with your team lead shadowing real work\n- Compensation is $150 for the full day\n- Dress comfortably and be ready to work\n- Bring a positive attitude and ask questions!\n\nPlease confirm receipt of this email and let me know if you have any questions.\n\nBest,\nProliance Recruiting"},
+{name:"TR Text Reminder",body:"Hey {candidate_name}! Just a reminder about your Trial Run tomorrow ({tr_date}) at {tr_time}. Location: {location}. Your Team Lead {team_lead_name} is expecting you. Please show up on time \u2014 communication is everything in this industry. If anything changes, let me know ASAP. Looking forward to hearing how it goes!"},
+{name:"Homework Message",body:"Hey {candidate_name}! Before your next step, I'd like you to do some research on Proliance General Contractors. Check out:\n\n- Our website: proliancegc.com\n- Our Instagram: @proliancegc\n- Google reviews and any recent news\n\nThis will help you understand our culture and what makes us different. Let me know once you've had a chance to look through everything!"},
+{name:"Team Lead Handoff",body:"Hey {team_lead_name},\n\nI'm handing off a candidate for you:\n\nName: {candidate_name}\nPhone: {candidate_phone}\nEmail: {candidate_email}\nPosition: {job_title}\n\nTR Date: {tr_date}\nTR Time: {tr_time}\nLocation: {location}\n\nNotes: {candidate_notes}\n\nPlease reach out to them before the TR. Let me know if you need anything!"},
+{name:"After Scheduling Text",body:"Hey {candidate_name}! Great news \u2014 you're all set for your Trial Run on {tr_date} at {tr_time} at {location}.\n\nBefore then, please:\n1. Complete your waivers (I'll send the link separately)\n2. Research Proliance \u2014 check out proliancegc.com and our Instagram @proliancegc\n3. Get a good night's sleep before your TR!\n\nExcited for you!"},
+{name:"Day Before Check-in",body:"Hey {candidate_name}! Just checking in \u2014 your Trial Run is TOMORROW ({tr_date}) at {tr_time}. Location: {location}.\n\nYour Team Lead {team_lead_name} ({team_lead_phone}) will be there to meet you.\n\nAre we still good for tomorrow? Please confirm!"},
+{name:"Morning Of Reminder",body:"Good morning {candidate_name}! Today's the day! Your Trial Run is at {tr_time} at {location}. {team_lead_name} is your Team Lead \u2014 don't hesitate to ask them anything.\n\nGive it your best today. This is your shot. Let's go!"}
+];
+
+/* ========== STATE ========== */
+function today(){return new Date().toISOString().slice(0,10)}
+function loadP(){try{return JSON.parse(localStorage.getItem(PK))||{name:"",archive:[],bests:{dials:0,talked:0,tasks:0,days:0},customTmpls:[]};}catch(e){return{name:"",archive:[],bests:{dials:0,talked:0,tasks:0,days:0},customTmpls:[]};}}
+function saveP(){localStorage.setItem(PK,JSON.stringify(P))}
+function fresh(){return{date:today(),locked:false,goals:[{t:"",d:false},{t:"",d:false},{t:"",d:false}],metrics:{dials:0,talked:0,hw:0,rejected:0},tasks:[],tags:JSON.parse(JSON.stringify(DEF_TAGS)),leads:[],pipeline:[],wins:[],timer:{on:false,end:null,mode:"work",wm:25,bm:5}}}
+function loadS(){try{var s=JSON.parse(localStorage.getItem(SK));if(!s||s.date!==today()){var op=s&&s.pipeline?s.pipeline:[];var ot=s&&s.tasks?s.tasks.filter(function(t){return!t.d}):[];var otg=s&&s.tags?s.tags:JSON.parse(JSON.stringify(DEF_TAGS));var ns=fresh();ns.pipeline=op;ns.tasks=ot;ns.tags=otg;return ns;}return s;}catch(e){return fresh();}}
+function saveS(){localStorage.setItem(SK,JSON.stringify(S))}
+var P=loadP(),S=loadS();
+if(!P.customTmpls)P.customTmpls=[];
+// Migrate built-in templates to profile on first load so all are editable
+if(!P.tmplsMigrated){
+TMPLS.forEach(function(t){P.customTmpls.push({name:t.name,body:t.body,id:id()})});
+P.tmplsMigrated=true;saveP();
+}
+
+/* Date formatting helper */
+var MO_NAMES=["January","February","March","April","May","June","July","August","September","October","November","December"];
+function fmtDate(iso){var d=new Date(iso+"T12:00:00");return MO_NAMES[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear()}
+
+/* ========== HELPERS ========== */
+function $(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+/* ========== CONFETTI ========== */
+function confetti(x,y){
+var colors=["#DC2626","#F59E0B","#059669","#0284C7","#7C3AED","#E11D48","#EAB308"];
+for(var i=0;i<18;i++){
+var p=$("div","confetti-piece");
+p.style.left=(x+Math.random()*60-30)+"px";
+p.style.top=(y-10)+"px";
+p.style.background=colors[Math.floor(Math.random()*colors.length)];
+p.style.animationDuration=(0.8+Math.random()*0.6)+"s";
+p.style.transform="rotate("+Math.floor(Math.random()*360)+"deg)";
+document.body.appendChild(p);
+setTimeout(function(el){return function(){el.remove()}}(p),1400);
+}
+}
+
+/* ========== RENDER ========== */
+function render(){
+var app=document.getElementById("app");
+app.innerHTML="";
+if(!P.name){showOnboard();return;}
+var tb=$("div","top-bar");
+var tl=$("div","top-bar-left");
+var h1=$("h1","","Daily Coach");
+var sub=$("div","subtitle","PROLIANCE RECRUITING");
+tl.appendChild(h1);tl.appendChild(sub);tb.appendChild(tl);
+var tr=$("div","top-bar-right");
+var eodBtn=$("button","btn btn-emerald btn-sm","\u{1F4CB} EOD");
+eodBtn.addEventListener("click",function(){showEOD()});
+var endBtn=$("button","btn btn-danger btn-sm","\u{1F3C1} End Day");
+endBtn.addEventListener("click",endDay);
+tr.appendChild(eodBtn);tr.appendChild(endBtn);tb.appendChild(tr);
+app.appendChild(tb);
+
+var cw=$("div","content-wrap");
+var mc=$("div","main-col");mc.id="mainCol";
+var sc=$("div","side-col");sc.id="sideCol";
+
+var qi=Math.floor(Math.random()*Q.length);
+var qc=$("div","quote-card");
+qc.appendChild($("div","quote-mark","\u201C"));
+qc.appendChild($("p","quote-text",Q[qi].t));
+qc.appendChild($("div","quote-src",Q[qi].s));
+mc.appendChild(qc);
+
+if(!S.locked){
+renderLockin(mc);
+}else{
+renderWorkspace(mc);
+}
+
+cw.appendChild(mc);
+renderCoach(sc);
+cw.appendChild(sc);
+app.appendChild(cw);
+renderBreakBar(app);
+}
+
+/* ========== ONBOARD ========== */
+function showOnboard(){
+var ov=$("div","overlay");
+var m=$("div","modal");
+m.appendChild($("h2","","Welcome to Daily Coach \u{1F44B}"));
+m.appendChild($("p","","What's your name?"));
+var inp=document.createElement("input");inp.type="text";inp.placeholder="Your first name...";
+var btn=$("button","btn btn-fire","Let's Go");
+btn.style.width="100%";btn.style.marginTop="4px";
+btn.addEventListener("click",function(){var v=inp.value.trim();if(!v)return;P.name=v;saveP();render()});
+inp.addEventListener("keydown",function(e){if(e.key==="Enter")btn.click()});
+m.appendChild(inp);m.appendChild(btn);ov.appendChild(m);
+document.getElementById("app").appendChild(ov);
+setTimeout(function(){inp.focus()},120);
+}
+
+/* ========== LOCK-IN ========== */
+function renderLockin(parent){
+var w=$("div","lockin-wrap");
+w.appendChild($("h2","","Hey "+P.name+"! Top goals today? \u{1F525}"));
+w.appendChild($("p","","Lock in 1\u20133 goals. Goal 1 is required."));
+for(var i=0;i<3;i++){
+var r=$("div","lockin-row");
+var n=$("div","lockin-num",""+(i+1));
+var inp=document.createElement("input");
+inp.type="text";inp.placeholder=i===0?"What's your #1 priority today?":(i===1?"Second goal (optional)...":"Third goal (optional)...");
+inp.value=S.goals[i].t;inp.dataset.idx=""+i;
+inp.addEventListener("input",function(){S.goals[parseInt(this.dataset.idx)].t=this.value;saveS()});
+r.appendChild(n);r.appendChild(inp);w.appendChild(r);
+}
+var btn=$("button","btn btn-fire lockin-btn","\u{1F512} Lock In \u2014 Let's Go");
+btn.addEventListener("click",function(){
+if(!S.goals[0].t.trim()){S.goals[0].t&&alert("Goal 1 is required!");return;}
+S.locked=true;saveS();render();
+});
+w.appendChild(btn);
+parent.appendChild(w);
+}
+
+/* ========== WORKSPACE ========== */
+function renderWorkspace(parent){
+var mb=$("div","metrics-bar");
+mb.appendChild($("div","mb-hd","\u{1F4CA} TODAY'S NUMBERS"));
+var mr=$("div","metrics-row");
+[{k:"dials",l:"Dials"},{k:"talked",l:"Talked To"},{k:"hw",l:"HW Sent"},{k:"rejected",l:"Rejected"}].forEach(function(m){
+var pill=$("div","metric-pill");
+pill.appendChild($("label","",m.l));
+var inp=document.createElement("input");inp.type="number";inp.min="0";inp.value=S.metrics[m.k];
+inp.addEventListener("input",function(){S.metrics[m.k]=parseInt(this.value)||0;saveS();updateStats()});
+pill.appendChild(inp);mr.appendChild(pill);
+});
+mb.appendChild(mr);
+var yest=getYesterdayDials();
+if(yest!==null&&S.metrics.dials>0){
+var diff=S.metrics.dials-yest;
+var nudge=$("div","metrics-nudge");
+if(diff>0) nudge.textContent="\u{1F525} "+S.metrics.dials+" dials vs "+yest+" yesterday \u2014 ahead!";
+else if(diff===0) nudge.textContent="\u{1F4AA} Tied with yesterday at "+yest+" dials. Push past it!";
+else nudge.textContent="\u26A1 "+yest+" yesterday \u2014 "+Math.abs(diff)+" more to catch up!";
+mb.appendChild(nudge);
+}
+parent.appendChild(mb);
+
+var sr=$("div","stats-row");sr.id="statsRow";
+appendStats(sr);
+parent.appendChild(sr);
+
+var tabData=[
+{id:"today",icon:"\u{1F3AF}",label:"Today"},
+{id:"pipelines",icon:"\u{1F4DE}",label:"Pipelines"},
+{id:"wins",icon:"\u{1F3C6}",label:"Wins"},
+{id:"templates",icon:"\u{1F4CB}",label:"Templates"},
+{id:"archive",icon:"\u{1F4C1}",label:"Archive"}
+];
+var trow=$("div","tab-row");
+tabData.forEach(function(td,i){
+var b=$("button","tab-btn"+(i===0?" active":""),td.icon+" "+td.label);
+b.dataset.tab=td.id;
+b.addEventListener("click",function(){
+trow.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});
+b.classList.add("active");
+parent.querySelectorAll(".tab-panel").forEach(function(x){x.classList.remove("active")});
+document.getElementById("tp-"+td.id).classList.add("active");
+});
+trow.appendChild(b);
+});
+parent.appendChild(trow);
+
+var p1=$("div","tab-panel active");p1.id="tp-today";renderTodayPanel(p1);parent.appendChild(p1);
+var p2=$("div","tab-panel");p2.id="tp-pipelines";renderPipelinePanel(p2);parent.appendChild(p2);
+var p3=$("div","tab-panel");p3.id="tp-wins";renderWinsPanel(p3);parent.appendChild(p3);
+var p4=$("div","tab-panel");p4.id="tp-templates";renderTemplatesPanel(p4);parent.appendChild(p4);
+var p5=$("div","tab-panel");p5.id="tp-archive";renderArchivePanel(p5);parent.appendChild(p5);
+}
+
+function appendStats(sr){
+var gd=S.goals.filter(function(g){return g.d&&g.t}).length;
+var gt=S.goals.filter(function(g){return g.t}).length;
+var td=S.tasks.filter(function(t){return t.d}).length;
+var data=[
+{v:gd+"/"+gt,l:"Goals",c:"c-fire"},
+{v:""+td,l:"Tasks Done",c:"c-sky"},
+{v:""+S.metrics.dials,l:"Dials",c:"c-amber"},
+{v:""+S.metrics.talked,l:"Talked",c:"c-emerald"},
+{v:""+S.metrics.hw,l:"HW",c:"c-violet"},
+{v:""+S.wins.length,l:"Wins",c:"c-rose"}
+];
+sr.innerHTML="";
+data.forEach(function(d){
+var b=$("div","stat-box "+d.c);
+b.appendChild($("div","stat-val",d.v));
+b.appendChild($("div","stat-lbl",d.l));
+sr.appendChild(b);
+});
+}
+
+function updateStats(){
+var sr=document.getElementById("statsRow");
+if(sr)appendStats(sr);
+}
+
+function getYesterdayDials(){
+if(!P.archive||!P.archive.length)return null;
+var y=new Date();y.setDate(y.getDate()-1);var ys=y.toISOString().slice(0,10);
+var e=P.archive.find(function(a){return a.date===ys});
+return e?e.metrics.dials:null;
+}
+
+/* ========== TODAY PANEL (FIXED LAYOUT) ========== */
+function renderTodayPanel(parent){
+/* FIX: Changed from 2-column grid to flex column layout.
+   Previously used gridTemplateColumns="1.15fr 1fr" with only the left column populated,
+   creating a large empty gap on the right side. Now uses full width. */
+var tw=$("div","");tw.style.display="flex";tw.style.flexDirection="column";tw.style.gap="14px";
+
+// Goals card with ring
+var gc=$("div","card");
+var gh=$("div","card-hd");gh.appendChild($("h3","","\u{1F3AF} Goals"));gc.appendChild(gh);
+var gi=$("div","goals-inner");
+var gd=S.goals.filter(function(g){return g.d&&g.t}).length;
+var gt=S.goals.filter(function(g){return g.t}).length;
+var pct=gt>0?gd/gt:0;
+var ringWrap=$("div","goals-ring");
+var svgNS="http://www.w3.org/2000/svg";
+var svg=document.createElementNS(svgNS,"svg");
+svg.setAttribute("viewBox","0 0 90 90");svg.setAttribute("width","90");svg.setAttribute("height","90");
+var bgCirc=document.createElementNS(svgNS,"circle");
+bgCirc.setAttribute("cx","45");bgCirc.setAttribute("cy","45");bgCirc.setAttribute("r","36");
+bgCirc.setAttribute("fill","none");bgCirc.setAttribute("stroke","#E8E4DF");bgCirc.setAttribute("stroke-width","6");
+svg.appendChild(bgCirc);
+var fgCirc=document.createElementNS(svgNS,"circle");
+fgCirc.setAttribute("cx","45");fgCirc.setAttribute("cy","45");fgCirc.setAttribute("r","36");
+fgCirc.setAttribute("fill","none");fgCirc.setAttribute("stroke","url(#ringGrad)");fgCirc.setAttribute("stroke-width","6");
+fgCirc.setAttribute("stroke-linecap","round");
+var circ=2*Math.PI*36;
+fgCirc.setAttribute("stroke-dasharray",""+circ);
+fgCirc.setAttribute("stroke-dashoffset",""+(circ*(1-pct)));
+fgCirc.style.transition="stroke-dashoffset .5s ease";
+var defs=document.createElementNS(svgNS,"defs");
+var grad=document.createElementNS(svgNS,"linearGradient");
+grad.setAttribute("id","ringGrad");grad.setAttribute("x1","0%");grad.setAttribute("y1","0%");grad.setAttribute("x2","100%");grad.setAttribute("y2","100%");
+var s1=document.createElementNS(svgNS,"stop");s1.setAttribute("offset","0%");s1.setAttribute("stop-color","#DC2626");
+var s2=document.createElementNS(svgNS,"stop");s2.setAttribute("offset","100%");s2.setAttribute("stop-color","#059669");
+grad.appendChild(s1);grad.appendChild(s2);defs.appendChild(grad);svg.appendChild(defs);
+svg.appendChild(fgCirc);ringWrap.appendChild(svg);
+var rt=$("div","ring-text",gd+"/"+gt);
+ringWrap.appendChild(rt);gi.appendChild(ringWrap);
+
+var gl=$("div","goals-list");
+S.goals.forEach(function(g,i){
+if(!g.t)return;
+var row=$("div","goal-row"+(g.d?" done":""));
+var chk=$("div","goal-check",g.d?"\u2713":"");
+row.appendChild(chk);
+row.appendChild($("span","goal-text",g.t));
+row.dataset.idx=""+i;
+row.addEventListener("click",function(e){
+var idx=parseInt(this.dataset.idx);
+S.goals[idx].d=!S.goals[idx].d;
+saveS();
+if(S.goals[idx].d){
+var rect=this.getBoundingClientRect();
+confetti(rect.left+rect.width/2,rect.top);
+}
+render();
+});
+gl.appendChild(row);
+});
+gi.appendChild(gl);gc.appendChild(gi);
+/* FIX: Append goals card directly to tw (removed "left" wrapper) */
+tw.appendChild(gc);
+
+// Side Tasks + Qualified Leads side by side
+var sub2=$("div","");sub2.style.display="grid";sub2.style.gridTemplateColumns="1fr 1fr";sub2.style.gap="14px";
+
+// Tasks
+var tc=$("div","card");
+var th=$("div","card-hd");th.appendChild($("h3","","\u2705 Side Tasks"));
+var tagToggle=$("button","btn btn-sm btn-ghost","Tags");
+var showTags=false;
+tagToggle.addEventListener("click",function(){
+showTags=!showTags;
+var te=document.getElementById("tagEditor");
+if(te)te.style.display=showTags?"block":"none";
+});
+th.appendChild(tagToggle);tc.appendChild(th);
+
+S.tasks.forEach(function(tk,i){
+var ti=$("div","task-item");
+var cb=document.createElement("input");cb.type="checkbox";cb.className="task-cb";cb.checked=tk.d;
+cb.addEventListener("change",function(){S.tasks[i].d=cb.checked;saveS();updateStats();
+var inp=ti.querySelector(".task-input");if(inp){inp.classList.toggle("done",cb.checked)}});
+var inp=document.createElement("input");inp.type="text";inp.className="task-input"+(tk.d?" done":"");inp.value=tk.text;inp.placeholder="Task...";
+inp.addEventListener("input",function(){S.tasks[i].text=this.value;saveS()});
+var tsel=document.createElement("select");tsel.className="tag-sel";
+S.tags.forEach(function(tg){
+var op=document.createElement("option");op.value=tg.name;op.textContent=tg.name;
+if(tk.tag===tg.name){op.selected=true;tsel.style.background=tg.bg;tsel.style.color=tg.color}
+tsel.appendChild(op);
+});
+tsel.addEventListener("change",function(){S.tasks[i].tag=tsel.value;saveS();render()});
+var del=$("button","btn-icon","\u00D7");
+del.addEventListener("click",function(){S.tasks.splice(i,1);saveS();render()});
+ti.appendChild(cb);ti.appendChild(inp);ti.appendChild(tsel);ti.appendChild(del);tc.appendChild(ti);
+});
+
+var ar=$("div","add-row");
+var ai=document.createElement("input");ai.type="text";ai.placeholder="Add a task...";ai.id="newTaskInp";
+var ab=$("button","btn btn-sm btn-fire","+");
+ab.addEventListener("click",function(){
+var v=ai.value.trim();if(!v)return;
+S.tasks.push({id:id(),text:v,d:false,tag:S.tags[0]?S.tags[0].name:"General"});
+saveS();render();
+});
+ai.addEventListener("keydown",function(e){if(e.key==="Enter")ab.click()});
+ar.appendChild(ai);ar.appendChild(ab);tc.appendChild(ar);
+
+var te=$("div","tag-editor");te.id="tagEditor";te.style.display="none";
+S.tags.forEach(function(tg,i){
+var r=$("div","tag-ed-row");
+var ni=document.createElement("input");ni.type="text";ni.value=tg.name;
+ni.addEventListener("input",function(){S.tags[i].name=ni.value;saveS()});
+var ci=document.createElement("input");ci.type="color";ci.value=tg.color;
+ci.addEventListener("input",function(){S.tags[i].color=ci.value;S.tags[i].bg=ci.value+"20";saveS()});
+var db=$("button","btn-icon","\u00D7");
+db.addEventListener("click",function(){S.tags.splice(i,1);saveS();render()});
+r.appendChild(ni);r.appendChild(ci);r.appendChild(db);te.appendChild(r);
+});
+var atb=$("button","btn btn-sm btn-ghost","+ Tag");
+atb.addEventListener("click",function(){S.tags.push({name:"New",color:"#6B7280",bg:"#6B728020"});saveS();render()});
+te.appendChild(atb);tc.appendChild(te);
+sub2.appendChild(tc);
+
+// Leads
+var lc=$("div","card");
+var lh=$("div","card-hd");lh.appendChild($("h3","","\u2B50 Qualified Leads"));
+var lab=$("button","btn btn-sm btn-emerald","+");
+lab.addEventListener("click",function(){S.leads.push({id:id(),name:"",notes:""});saveS();render()});
+lh.appendChild(lab);lc.appendChild(lh);
+S.leads.forEach(function(ld,i){
+var lr=$("div","lead-row");
+var ni=document.createElement("input");ni.type="text";ni.className="lead-name-inp";ni.placeholder="Lead name...";ni.value=ld.name;
+ni.addEventListener("input",function(){S.leads[i].name=ni.value;saveS()});
+var nti=document.createElement("input");nti.type="text";nti.className="lead-notes-inp";nti.placeholder="Notes...";nti.value=ld.notes;
+nti.addEventListener("input",function(){S.leads[i].notes=nti.value;saveS()});
+var del=$("button","btn-icon","\u00D7");
+del.addEventListener("click",function(){S.leads.splice(i,1);saveS();render()});
+lr.appendChild(ni);lr.appendChild(nti);lr.appendChild(del);lc.appendChild(lr);
+});
+var af=$("div","add-row");af.style.marginTop="10px";
+var afn=document.createElement("input");afn.type="text";afn.placeholder="Name...";afn.id="leadNameInp";
+var afnt=document.createElement("input");afnt.type="text";afnt.placeholder="Notes...";afnt.id="leadNotesInp";
+var afb=$("button","btn btn-sm btn-emerald","+");
+afb.addEventListener("click",function(){
+var n=afn.value.trim();if(!n)return;
+S.leads.push({id:id(),name:n,notes:afnt.value.trim()});saveS();render();
+});
+af.appendChild(afn);af.appendChild(afnt);af.appendChild(afb);lc.appendChild(af);
+sub2.appendChild(lc);
+
+/* FIX: Append sub2 directly to tw (removed "left" wrapper) */
+tw.appendChild(sub2);
+parent.appendChild(tw);
+}
+
+/* ========== PIPELINE ========== */
+function renderPipelinePanel(parent){
+var c=$("div","card");
+var h=$("div","card-hd");h.appendChild($("h3","","\u{1F4DE} Active Pipelines"));
+var ab=$("button","btn btn-sm btn-fire","+ Candidate");
+ab.addEventListener("click",function(){
+var f=document.getElementById("pipeForm");
+if(f)f.style.display=f.style.display==="none"?"grid":"none";
+});
+h.appendChild(ab);c.appendChild(h);
+
+var form=$("div","pipe-form card");form.id="pipeForm";form.style.display="none";form.style.marginBottom="14px";
+var fields=[
+{k:"name",p:"Full name",t:"text"},{k:"email",p:"Email",t:"email"},
+{k:"phone",p:"Phone",t:"tel"},{k:"jobTitle",p:"Job title",t:"text"},
+{k:"trDate",p:"TR Date",t:"date"},{k:"trTime",p:"TR Time",t:"time"},
+{k:"location",p:"Location",t:"text"}
+];
+fields.forEach(function(f){
+var inp=document.createElement("input");inp.type=f.t;inp.placeholder=f.p;inp.id="pf_"+f.k;
+form.appendChild(inp);
+});
+var wfSel=document.createElement("select");wfSel.id="pf_workflow";
+["Sales","Office"].forEach(function(w){var o=document.createElement("option");o.value=w;o.textContent=(w==="Sales"?"\u{1F3C3} ":"\u{1F3E2} ")+w;wfSel.appendChild(o)});
+form.appendChild(wfSel);
+var tlSel=document.createElement("select");tlSel.id="pf_teamLead";
+TL.forEach(function(t){var o=document.createElement("option");o.value=t.n;o.textContent=t.n+" "+t.p;tlSel.appendChild(o)});
+form.appendChild(tlSel);
+var nta=document.createElement("textarea");nta.placeholder="Handoff notes...";nta.id="pf_notes";nta.className="full";
+form.appendChild(nta);
+var sb=$("button","btn btn-fire full","Add to Pipeline");
+sb.addEventListener("click",function(){
+var n=document.getElementById("pf_name").value.trim();if(!n)return;
+S.pipeline.push({
+id:id(),name:n,
+email:document.getElementById("pf_email").value,
+phone:document.getElementById("pf_phone").value,
+jobTitle:document.getElementById("pf_jobTitle").value,
+workflow:document.getElementById("pf_workflow").value,
+teamLead:document.getElementById("pf_teamLead").value,
+trDate:document.getElementById("pf_trDate").value,
+trTime:document.getElementById("pf_trTime").value,
+location:document.getElementById("pf_location").value,
+notes:document.getElementById("pf_notes").value,
+step:0
+});
+saveS();render();
+});
+form.appendChild(sb);c.appendChild(form);
+
+S.pipeline.forEach(function(p,pi){
+var steps=p.workflow==="Sales"?S_STEPS:O_STEPS;
+var pctVal=steps.length>0?Math.round((p.step/steps.length)*100):0;
+var curStage=p.step<steps.length?steps[p.step]:"Complete";
+
+var pc=$("div","pipe-card");
+var ph=$("div","pipe-hd");
+ph.appendChild($("span","pipe-name",p.name||"(unnamed)"));
+var badges=$("div","pipe-badges");
+badges.appendChild($("span","badge badge-pct",pctVal+"%"));
+badges.appendChild($("span","badge badge-stage",curStage));
+badges.appendChild($("span","badge "+(p.workflow==="Sales"?"badge-sales":"badge-office"),(p.workflow==="Sales"?"\u{1F3C3} ":"\u{1F3E2} ")+p.workflow));
+var delB=$("button","btn-icon","\u{1F5D1}");
+delB.addEventListener("click",function(){if(confirm("Delete "+p.name+"?")){S.pipeline.splice(pi,1);saveS();render()}});
+badges.appendChild(delB);
+ph.appendChild(badges);pc.appendChild(ph);
+
+var info=$("div","pipe-info");
+if(p.email)info.appendChild($("span","","\u{1F4E7} "+p.email));
+if(p.phone)info.appendChild($("span","","\u{1F4DE} "+p.phone));
+if(p.jobTitle)info.appendChild($("span","","\u{1F4BC} "+p.jobTitle));
+info.appendChild($("span","","\u{1F464} "+p.teamLead));
+if(p.trDate)info.appendChild($("span","","\u{1F4C5} "+p.trDate));
+if(p.trTime)info.appendChild($("span","","\u23F0 "+p.trTime));
+if(p.location)info.appendChild($("span","","\u{1F4CD} "+p.location));
+pc.appendChild(info);
+
+if(p.notes){
+var nb=$("div","pipe-notes-box","\u{1F4DD} "+p.notes);
+pc.appendChild(nb);
+}
+
+var st=$("div","step-track");
+steps.forEach(function(s,si){
+var cls="step-dot";
+if(si<p.step)cls+=" done";else if(si===p.step)cls+=" current";
+var dot=$("span",cls,s);
+dot.dataset.pi=""+pi;dot.dataset.si=""+si;
+dot.addEventListener("click",function(){
+var idx=parseInt(this.dataset.pi);
+var sidx=parseInt(this.dataset.si);
+S.pipeline[idx].step=sidx+1;saveS();render();
+});
+st.appendChild(dot);
+});
+pc.appendChild(st);
+c.appendChild(pc);
+});
+
+if(S.pipeline.length>0){
+var ps=$("div","pipe-stats");
+var active=S.pipeline.filter(function(p){var st=p.workflow==="Sales"?S_STEPS:O_STEPS;return p.step<st.length}).length;
+var comp=S.pipeline.length-active;
+ps.innerHTML="";
+var a=$("span","pipe-stat");a.innerHTML="Active: <strong>"+active+"</strong>";ps.appendChild(a);
+var co=$("span","pipe-stat");co.innerHTML="Completed: <strong>"+comp+"</strong>";ps.appendChild(co);
+c.appendChild(ps);
+}
+parent.appendChild(c);
+}
+
+/* ========== WINS ========== */
+function renderWinsPanel(parent){
+var c=$("div","card");
+var h=$("div","card-hd");h.appendChild($("h3","","\u{1F3C6} Today's Wins"));c.appendChild(h);
+var qw=$("div","quick-wins");
+WIN_TPL.forEach(function(w){
+var b=$("button","btn btn-sm btn-amber","\u{1F389} "+w);
+b.addEventListener("click",function(){
+S.wins.push({id:id(),text:w,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});
+saveS();render();
+});
+qw.appendChild(b);
+});
+c.appendChild(qw);
+var ar=$("div","add-row");
+var ai=document.createElement("input");ai.type="text";ai.placeholder="Custom win...";ai.id="winInp";
+var ab=$("button","btn btn-sm btn-fire","Add Win");
+ab.addEventListener("click",function(){var v=ai.value.trim();if(!v)return;S.wins.push({id:id(),text:v,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});saveS();render()});
+ai.addEventListener("keydown",function(e){if(e.key==="Enter")ab.click()});
+ar.appendChild(ai);ar.appendChild(ab);c.appendChild(ar);
+S.wins.forEach(function(w,i){
+var wc=$("div","win-card");
+wc.appendChild($("span","win-icon","\u{1F31F}"));
+var wb=$("div","win-body");
+wb.appendChild($("div","win-title",w.text));
+var wm=$("div","win-meta");wm.appendChild($("span","",w.time));wb.appendChild(wm);
+wc.appendChild(wb);
+var del=$("button","btn-icon","\u00D7");del.style.color="var(--amber-d)";
+del.addEventListener("click",function(){S.wins.splice(i,1);saveS();render()});
+wc.appendChild(del);c.appendChild(wc);
+});
+parent.appendChild(c);
+}
+
+/* ========== TEMPLATES ========== */
+function renderTemplatesPanel(parent){
+var c=$("div","card");
+var h=$("div","card-hd");h.appendChild($("h3","","\u{1F4E7} Templates"));
+var addTmplBtn=$("button","btn btn-sm btn-fire","+ Template");
+addTmplBtn.addEventListener("click",function(){
+var f=document.getElementById("customTmplForm");
+if(f)f.style.display=f.style.display==="none"?"block":"none";
+});
+h.appendChild(addTmplBtn);
+c.appendChild(h);
+
+// Add new template form (hidden)
+var ctf=$("div","card");ctf.id="customTmplForm";ctf.style.display="none";ctf.style.marginBottom="14px";
+ctf.appendChild($("h4","","Add New Template"));ctf.firstChild.style.marginBottom="8px";
+var ctName=document.createElement("input");ctName.type="text";ctName.placeholder="Template name...";ctName.id="ctName";ctName.style.marginBottom="8px";
+ctf.appendChild(ctName);
+var ctBody=document.createElement("textarea");ctBody.placeholder="Template body... use {candidate_name}, {team_lead_name}, etc.";ctBody.id="ctBody";ctBody.style.minHeight="120px";ctBody.style.marginBottom="8px";
+ctf.appendChild(ctBody);
+var ctSave=$("button","btn btn-fire","Save Template");
+ctSave.addEventListener("click",function(){
+var name=document.getElementById("ctName").value.trim();
+var body=document.getElementById("ctBody").value.trim();
+if(!name||!body)return;
+P.customTmpls.push({name:name,body:body,id:id()});
+saveP();render();
+});
+ctf.appendChild(ctSave);
+c.appendChild(ctf);
+
+// Candidate selector
+if(S.pipeline.length>0){
+var sw=$("div","");sw.style.marginBottom="14px";
+sw.appendChild($("label","","Select candidate to auto-fill:"));
+sw.lastChild.style.cssText="display:block;font-size:.78rem;font-weight:600;margin-bottom:4px";
+var sel=document.createElement("select");sel.id="tmplCand";
+var none=document.createElement("option");none.value="";none.textContent="-- None --";sel.appendChild(none);
+S.pipeline.forEach(function(p){var o=document.createElement("option");o.value=p.id;o.textContent=p.name||"(unnamed)";sel.appendChild(o)});
+sel.addEventListener("change",function(){
+var prev=document.getElementById("tmplPreview");if(prev)prev.innerHTML="";
+});
+sw.appendChild(sel);c.appendChild(sw);
+}
+// Merge fields
+var chips=$("div","");chips.style.cssText="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px";
+["{candidate_name}","{candidate_email}","{candidate_phone}","{job_title}","{team_lead_name}","{team_lead_phone}","{tr_date}","{tr_time}","{location}","{candidate_notes}"].forEach(function(f){
+var ch=$("span","tag-pill",f);ch.style.cssText="background:#E0F2FE;color:#0284C7;font-size:.6rem;cursor:pointer";
+ch.title="Click to copy";
+ch.addEventListener("click",function(){navigator.clipboard.writeText(f)});
+chips.appendChild(ch);
+});
+c.appendChild(chips);
+
+// All templates (unified list — all editable/deletable)
+P.customTmpls.forEach(function(tmpl,i){
+var tc=$("div","tmpl-card");tc.style.position="relative";
+tc.appendChild($("h4","",tmpl.name));
+tc.appendChild($("p","",tmpl.body.substring(0,90)+"..."));
+// Action buttons
+var actions=$("div","");actions.style.cssText="position:absolute;top:8px;right:8px;display:flex;gap:2px";
+var editBtn=$("button","btn-icon","\u270E");editBtn.title="Edit";editBtn.style.fontSize=".85rem";
+editBtn.addEventListener("click",function(e){
+e.stopPropagation();
+showTmplEdit(i);
+});
+var delBtn=$("button","btn-icon","\u00D7");delBtn.style.color="var(--fire)";delBtn.title="Delete";
+delBtn.addEventListener("click",function(e){
+e.stopPropagation();
+P.customTmpls.splice(i,1);saveP();render();
+});
+actions.appendChild(editBtn);actions.appendChild(delBtn);
+tc.appendChild(actions);
+tc.addEventListener("click",function(){showTmplPreview(tmpl)});
+c.appendChild(tc);
+});
+
+var prev=$("div","");prev.id="tmplPreview";c.appendChild(prev);
+parent.appendChild(c);
+}
+
+function showTmplEdit(idx){
+var area=document.getElementById("tmplPreview");area.innerHTML="";
+var tmpl=P.customTmpls[idx];
+area.appendChild($("h4","","Edit Template"));area.firstChild.style.marginBottom="8px";
+var nameInp=document.createElement("input");nameInp.type="text";nameInp.value=tmpl.name;nameInp.style.marginBottom="8px";
+area.appendChild(nameInp);
+var bodyInp=document.createElement("textarea");bodyInp.value=tmpl.body;bodyInp.style.minHeight="140px";bodyInp.style.marginBottom="8px";
+area.appendChild(bodyInp);
+var btns=$("div","");btns.style.cssText="display:flex;gap:8px";
+var saveBtn=$("button","btn btn-fire","Save Changes");
+saveBtn.addEventListener("click",function(){
+var n=nameInp.value.trim();var b=bodyInp.value.trim();
+if(!n||!b)return;
+P.customTmpls[idx].name=n;P.customTmpls[idx].body=b;
+saveP();render();
+});
+var cancelBtn=$("button","btn btn-ghost","Cancel");
+cancelBtn.addEventListener("click",function(){area.innerHTML=""});
+btns.appendChild(saveBtn);btns.appendChild(cancelBtn);
+area.appendChild(btns);
+}
+
+function showTmplPreview(tmpl){
+var area=document.getElementById("tmplPreview");area.innerHTML="";
+var body=tmpl.body;
+var selEl=document.getElementById("tmplCand");
+if(selEl&&selEl.value){
+var ca=S.pipeline.find(function(p){return p.id===selEl.value});
+if(ca){
+var tl2=TL.find(function(t){return t.n===ca.teamLead});
+body=body.replace(/\{candidate_name\}/g,ca.name||"").replace(/\{candidate_email\}/g,ca.email||"").replace(/\{candidate_phone\}/g,ca.phone||"").replace(/\{job_title\}/g,ca.jobTitle||"").replace(/\{team_lead_name\}/g,ca.teamLead||"").replace(/\{team_lead_phone\}/g,tl2?tl2.p:"").replace(/\{tr_date\}/g,ca.trDate||"").replace(/\{tr_time\}/g,ca.trTime||"").replace(/\{location\}/g,ca.location||"").replace(/\{candidate_notes\}/g,ca.notes||"");
+}
+}
+area.appendChild($("h4","",tmpl.name));area.firstChild.style.marginBottom="6px";
+area.appendChild($("div","tmpl-preview",body));
+var cb=$("button","btn btn-sky","Copy");cb.style.marginTop="10px";
+cb.addEventListener("click",function(){navigator.clipboard.writeText(body).then(function(){cb.textContent="Copied!";setTimeout(function(){cb.textContent="Copy"},1500)})});
+area.appendChild(cb);
+}
+
+/* ========== ARCHIVE ========== */
+function renderArchivePanel(parent){
+var c=$("div","card");
+var h=$("div","card-hd");h.appendChild($("h3","","\u{1F4C5} Weekly Archive"));
+if(P.archive&&P.archive.length>0){
+var delSelBtn=$("button","btn btn-sm btn-danger","Delete Selected");
+delSelBtn.id="archDelBtn";
+h.appendChild(delSelBtn);
+}
+c.appendChild(h);
+
+if(!P.archive||!P.archive.length){
+c.appendChild($("p","","No archived days yet."));c.lastChild.style.cssText="color:var(--text3);font-size:.88rem;padding:8px 0";
+parent.appendChild(c);return;
+}
+var dayNames=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+// Group by week (Sunday start)
+var weeks={};
+P.archive.forEach(function(a){
+var d=new Date(a.date+"T12:00:00");var day=d.getDay();
+var sun=new Date(d);sun.setDate(d.getDate()-day);
+var key=sun.toISOString().slice(0,10);
+if(!weeks[key])weeks[key]=[];weeks[key].push(a);
+});
+
+Object.keys(weeks).sort().reverse().forEach(function(wk){
+var entries=weeks[wk];
+var aw=$("div","arch-week");
+var awh=$("div","arch-hd");
+var satDate=new Date(wk+"T12:00:00");satDate.setDate(satDate.getDate()+6);
+var satKey=satDate.toISOString().slice(0,10);
+// Weekly totals
+var totals={dials:0,talked:0,hw:0,rejected:0};
+entries.forEach(function(e){totals.dials+=e.metrics.dials||0;totals.talked+=e.metrics.talked||0;totals.hw+=e.metrics.hw||0;totals.rejected+=e.metrics.rejected||0});
+// Header: March 29, 2026 – April 4, 2026
+var weekLabel=fmtDate(wk)+" \u2013 "+fmtDate(satKey);
+awh.appendChild($("span","",weekLabel));
+awh.appendChild($("span","arrow","\u25BC"));
+awh.addEventListener("click",function(){aw.classList.toggle("open")});
+aw.appendChild(awh);
+
+var awb=$("div","arch-body");
+
+// Weekly tally
+var tallyWrap=$("div","");tallyWrap.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:14px";
+var tallyCb=document.createElement("input");tallyCb.type="checkbox";tallyCb.className="arch-cb";
+tallyCb.dataset.date=entries.map(function(e){return e.date}).join(",");
+tallyCb.style.cssText="width:15px;height:15px;accent-color:var(--fire);flex-shrink:0";tallyCb.title="Select entire week";
+tallyWrap.appendChild(tallyCb);
+var tg=$("div","arch-totals");tg.style.flex="1";
+[{v:totals.dials,l:"Dials"},{v:totals.talked,l:"Talked To"},{v:totals.hw,l:"HW Sent"},{v:totals.rejected,l:"Rejected"}].forEach(function(t){
+var ab=$("div","arch-tot");ab.appendChild($("div","at-v",""+t.v));ab.appendChild($("div","at-l",t.l));tg.appendChild(ab);
+});
+tallyWrap.appendChild(tg);
+var delWeekBtn=$("button","btn-icon","\u{1F5D1}");delWeekBtn.title="Delete entire week";
+delWeekBtn.dataset.dates=entries.map(function(e){return e.date}).join(",");
+delWeekBtn.addEventListener("click",function(){
+var dates=this.dataset.dates.split(",");
+P.archive=P.archive.filter(function(a){return dates.indexOf(a.date)===-1});
+saveP();render();
+});
+tallyWrap.appendChild(delWeekBtn);
+awb.appendChild(tallyWrap);
+
+// Individual entries
+entries.forEach(function(e){
+var ad=$("div","arch-day");ad.style.flexDirection="column";ad.style.alignItems="stretch";ad.style.gap="4px";
+var topRow=$("div","");topRow.style.cssText="display:flex;align-items:flex-start;gap:10px";
+var cb=document.createElement("input");cb.type="checkbox";cb.className="arch-cb";cb.dataset.date=e.date;
+cb.style.cssText="width:15px;height:15px;accent-color:var(--fire);flex-shrink:0;margin-top:3px";
+topRow.appendChild(cb);
+var inf=$("div","arch-day-info");inf.style.flex="1";
+// Date + Day name
+var dd=new Date(e.date+"T12:00:00");
+var dayName=dayNames[dd.getDay()];
+inf.appendChild($("strong","",e.date+" \u2014 "+dayName));
+// Metrics
+inf.appendChild($("div","","Dials: "+(e.metrics.dials||0)+" | Talked To: "+(e.metrics.talked||0)+" | HW Sent: "+(e.metrics.hw||0)+" | Rejected: "+(e.metrics.rejected||0)));
+inf.lastChild.style.cssText="font-size:.78rem;color:var(--text2);margin-top:2px";
+// Qualified leads with names and notes (these are also the HW candidates)
+if(e.leads&&e.leads.length>0){
+e.leads.forEach(function(l){
+var lDiv=$("div","");lDiv.style.cssText="font-size:.78rem;margin-top:2px;padding-left:2px;color:var(--emerald-d)";
+lDiv.textContent="\u2B50 "+l.name+(l.notes?" \u2014 "+l.notes:"");
+inf.appendChild(lDiv);
+});
+}else if((e.metrics.hw||0)>0){
+var noLeads=$("div","");noLeads.style.cssText="font-size:.72rem;color:var(--text3);margin-top:2px;font-style:italic";
+noLeads.textContent="("+e.metrics.hw+" HW sent \u2014 no lead names logged)";
+inf.appendChild(noLeads);
+}
+topRow.appendChild(inf);
+// Delete
+var delBtn=$("button","btn-icon","\u00D7");delBtn.style.cssText="flex-shrink:0;margin-top:1px";
+delBtn.dataset.date=e.date;
+delBtn.addEventListener("click",function(){
+var dt=this.dataset.date;
+P.archive=P.archive.filter(function(a){return a.date!==dt});
+saveP();render();
+});
+topRow.appendChild(delBtn);
+ad.appendChild(topRow);
+awb.appendChild(ad);
+});
+aw.appendChild(awb);c.appendChild(aw);
+});
+
+// Delete Selected handler
+var dsb=document.getElementById("archDelBtn");
+if(dsb){
+dsb.addEventListener("click",function(){
+var cbs=c.querySelectorAll(".arch-cb:checked");
+var dates=[];
+cbs.forEach(function(cb){
+var val=cb.dataset.date;
+if(val.indexOf(",")>-1){val.split(",").forEach(function(d){dates.push(d)})}
+else{dates.push(val)}
+});
+if(!dates.length)return;
+P.archive=P.archive.filter(function(a){return dates.indexOf(a.date)===-1});
+saveP();render();
+});
+}
+parent.appendChild(c);
+}
+
+/* ========== COACH ========== */
+function renderCoach(sc){
+var ch=$("div","coach-hd");
+ch.appendChild($("div","label","\u{1F4AC} COACH"));
+ch.appendChild($("h3","","Your AI Coach"));
+sc.appendChild(ch);
+
+var msgs=$("div","coach-msgs");msgs.id="coachMsgs";
+var greet=$("div","c-msg coach","What's up, "+P.name+"? I can see your numbers \u2014 ask me for strategy, a pep talk, or pipeline advice. Let's get after it \u{1F525}");
+msgs.appendChild(greet);
+sc.appendChild(msgs);
+
+var pb=$("div","pb-section");
+pb.appendChild($("div","label","\u{1F451} PERSONAL BESTS"));
+var pg=$("div","pb-grid");
+[{v:P.bests.dials||0,l:"Most Dials"},{v:P.bests.talked||0,l:"Most Talked"},{v:P.bests.tasks||0,l:"Most Tasks"},{v:P.bests.days||0,l:"Days Tracked"}].forEach(function(b){
+var pi=$("div","pb-item");pi.appendChild($("div","pb-val",""+b.v));pi.appendChild($("div","pb-lbl",b.l));pg.appendChild(pi);
+});
+pb.appendChild(pg);sc.appendChild(pb);
+
+var ci=$("div","coach-input");
+var inp=document.createElement("input");inp.type="text";inp.placeholder="Ask your coach...";inp.id="coachInp";
+var send=$("button","btn btn-sm btn-fire","Send");
+send.addEventListener("click",sendCoach);
+inp.addEventListener("keydown",function(e){if(e.key==="Enter")sendCoach()});
+ci.appendChild(inp);ci.appendChild(send);sc.appendChild(ci);
+}
+
+function sendCoach(){
+var inp=document.getElementById("coachInp");
+var msg=inp.value.trim();if(!msg)return;inp.value="";
+var msgs=document.getElementById("coachMsgs");
+msgs.appendChild($("div","c-msg user",msg));
+var loading=$("div","c-msg coach","Thinking...");loading.style.opacity=".5";
+msgs.appendChild(loading);msgs.scrollTop=msgs.scrollHeight;
+var stats={dials:S.metrics.dials,talked:S.metrics.talked,hw:S.metrics.hw,rejected:S.metrics.rejected,tasks_done:S.tasks.filter(function(t){return t.d}).length,total_tasks:S.tasks.length,leads:S.leads.length,pipeline:S.pipeline.length,wins:S.wins.length,goals:S.goals.filter(function(g){return g.t}).map(function(g){return(g.d?"[DONE] ":"")+g.t})};
+fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg,name:P.name,stats:stats})}).then(function(r){return r.json()}).then(function(data){
+loading.remove();
+msgs.appendChild($("div","c-msg coach",data.reply||data.error||"Keep pushing!"));
+msgs.scrollTop=msgs.scrollHeight;
+}).catch(function(){
+loading.remove();
+msgs.appendChild($("div","c-msg coach","Coach is offline \u2014 but you know what to do. Keep dialing, "+P.name+"!"));
+msgs.scrollTop=msgs.scrollHeight;
+});
+}
+
+/* ========== BREAK BAR ========== */
+function renderBreakBar(app){
+var bb=$("div","break-bar");bb.id="breakBar";
+var mode=S.timer.mode||"work";
+var dot=$("div","break-dot "+(mode==="work"?"work":"brk"));
+bb.appendChild(dot);
+var label=$("span","break-label",(mode==="work"?"Working":"Break")+" \u2014 ");
+var timeSpan=$("span","break-time","--:--");timeSpan.id="breakTime";
+bb.appendChild(label);
+var track=$("div","break-track");
+var fill=$("div","break-fill"+(mode==="work"?" work":""));fill.id="breakFill";fill.style.width="0%";
+track.appendChild(fill);bb.appendChild(track);
+bb.appendChild(timeSpan);
+
+var btn=$("button","btn btn-sm "+(mode==="work"?"btn-amber":"btn-emerald"),mode==="work"?"Take Break":"Back to Work");
+btn.addEventListener("click",function(){
+if(!S.timer.on){
+var dur=S.timer.mode==="work"?S.timer.wm:S.timer.bm;
+S.timer.end=Date.now()+dur*60*1000;
+S.timer.on=true;saveS();startTick();
+}else{
+S.timer.on=false;S.timer.end=null;saveS();render();
+}
+});
+bb.appendChild(btn);
+
+var resetB=$("button","btn btn-sm btn-ghost","Reset");
+resetB.addEventListener("click",function(){S.timer.on=false;S.timer.end=null;S.timer.mode="work";saveS();render()});
+bb.appendChild(resetB);
+
+app.appendChild(bb);
+if(S.timer.on&&S.timer.end)startTick();
+}
+
+var _tick=null;
+function startTick(){
+if(_tick)clearInterval(_tick);
+function tick(){
+if(!S.timer.on)return clearInterval(_tick);
+var bt=document.getElementById("breakTime");
+var bf=document.getElementById("breakFill");
+if(!bt)return clearInterval(_tick);
+var remain=S.timer.end-Date.now();
+if(remain<=0){
+S.timer.on=false;
+var was=S.timer.mode;
+S.timer.mode=was==="work"?"break":"work";
+S.timer.end=null;saveS();
+if("Notification" in window&&Notification.permission==="granted"){
+new Notification("Proliance Coach",{body:was==="work"?"Time for a break!":"Break's over \u2014 back to work!"});
+}
+render();return;
+}
+var m=Math.floor(remain/60000),s=Math.floor((remain%60000)/1000);
+bt.textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+var total=(S.timer.mode==="work"?S.timer.wm:S.timer.bm)*60*1000;
+if(bf)bf.style.width=(((total-remain)/total)*100)+"%";
+}
+tick();_tick=setInterval(tick,500);
+if("Notification" in window&&Notification.permission==="default")Notification.requestPermission();
+}
+
+/* ========== EOD ========== */
+function buildEOD(){
+var lines=[];
+var d=new Date(S.date+"T12:00:00");
+var days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var dayName=days[d.getDay()];
+lines.push("EOD - "+S.date+" - "+dayName);
+lines.push("");
+lines.push("Dials: "+S.metrics.dials);
+lines.push("Talked To: "+S.metrics.talked);
+lines.push("Rejected: "+S.metrics.rejected);
+lines.push("HW Sent: "+S.metrics.hw);
+lines.push("");
+if(S.leads.length>0){
+lines.push("Qualified Leads:");
+S.leads.forEach(function(l){lines.push("- "+l.name+(l.notes?" \u2014 "+l.notes:""))});
+lines.push("");
+}
+// Tasks grouped by tag
+var tg={};S.tasks.forEach(function(t){var tag=t.tag||"Other";if(!tg[tag])tg[tag]=[];tg[tag].push(t)});
+if(S.tasks.length>0){
+lines.push("Other Tasks:");
+Object.keys(tg).forEach(function(tag){
+lines.push(tag);
+tg[tag].forEach(function(t){
+lines.push((t.d?"\u2611 ":"\u2610 ")+t.text);
+});
+});
+lines.push("");
+}
+if(S.wins.length>0){
+lines.push("Wins:");
+S.wins.forEach(function(w){lines.push("\u2022 "+w.text)});
+lines.push("");
+}
+lines.push("______________________________________________________");
+return lines.join("\n");
+}
+
+function showEOD(){
+var ov=$("div","overlay");
+var bx=$("div","modal eod-box");
+bx.appendChild($("h2","","EOD Report"));
+bx.appendChild($("p","sub","Copy and send to your team."));
+var report=buildEOD();
+bx.appendChild($("div","eod-content",report));
+var btns=$("div","eod-btns");
+var copyBtn=$("button","btn btn-sky","\u{1F4CB} Copy");
+copyBtn.addEventListener("click",function(){navigator.clipboard.writeText(report).then(function(){copyBtn.textContent="Copied!";setTimeout(function(){copyBtn.textContent="\u{1F4CB} Copy"},1500)})});
+btns.appendChild(copyBtn);
+var closeBtn=$("button","btn btn-ghost","Close");
+closeBtn.addEventListener("click",function(){ov.remove()});
+btns.appendChild(closeBtn);
+bx.appendChild(btns);ov.appendChild(bx);
+document.body.appendChild(ov);
+ov.addEventListener("click",function(e){if(e.target===ov)ov.remove()});
+}
+
+function endDay(){
+var ov=$("div","overlay");
+var m=$("div","modal");
+m.appendChild($("h2","","End your day?"));
+m.appendChild($("p","","Today's data will be archived. Pipeline carries over."));
+var btns=$("div","eod-btns");
+var noBtn=$("button","btn btn-ghost","Cancel");
+noBtn.addEventListener("click",function(){ov.remove()});
+var yesBtn=$("button","btn btn-fire","\u{1F3C1} End Day & Archive");
+yesBtn.addEventListener("click",function(){
+ov.remove();
+// Update personal bests
+if(S.metrics.dials>(P.bests.dials||0))P.bests.dials=S.metrics.dials;
+if(S.metrics.talked>(P.bests.talked||0))P.bests.talked=S.metrics.talked;
+var tc=S.tasks.filter(function(t){return t.d}).length;
+if(tc>(P.bests.tasks||0))P.bests.tasks=tc;
+P.bests.days=(P.bests.days||0)+1;
+// Archive
+P.archive.push({
+date:S.date,
+metrics:Object.assign({},S.metrics),
+goals:S.goals.filter(function(g){return g.t}).map(function(g){return{t:g.t,d:g.d}}),
+leads:S.leads.map(function(l){return{name:l.name,notes:l.notes}}),
+tasks:S.tasks.map(function(t){return{text:t.text,d:t.d,tag:t.tag}}),
+wins:S.wins.map(function(w){return w.text})
+});
+saveP();
+// Reset to fresh day (pipeline carries over)
+var oldPipe=S.pipeline;var oldTasks=S.tasks.filter(function(t){return!t.d});var oldTags=S.tags;S=fresh();S.pipeline=oldPipe;S.tasks=oldTasks;S.tags=oldTags;saveS();
+render();
+});
+btns.appendChild(noBtn);btns.appendChild(yesBtn);
+m.appendChild(btns);ov.appendChild(m);
+document.body.appendChild(ov);
+ov.addEventListener("click",function(e){if(e.target===ov)ov.remove()});
+}
+
+/* ========== INIT ========== */
+render();
+if(S.timer.on&&S.timer.end)startTick();
+
+})();
+</script>
+</body>
+</html>
