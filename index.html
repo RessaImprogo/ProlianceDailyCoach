@@ -475,7 +475,7 @@ var TMPLS=[
 function today(){return new Date().toISOString().slice(0,10)}
 function loadP(){try{return JSON.parse(localStorage.getItem(PK))||{name:"",archive:[],bests:{dials:0,talked:0,tasks:0,days:0},customTmpls:[]};}catch(e){return{name:"",archive:[],bests:{dials:0,talked:0,tasks:0,days:0},customTmpls:[]};}}
 function saveP(){localStorage.setItem(PK,JSON.stringify(P))}
-function fresh(){return{date:today(),locked:false,goals:[{t:"",d:false},{t:"",d:false},{t:"",d:false}],metrics:{dials:0,talked:0,hw:0,rejected:0},tasks:[],tags:JSON.parse(JSON.stringify(DEF_TAGS)),leads:[],pipeline:[],wins:[],timer:{on:false,end:null,mode:"work",wm:25,bm:5}}}
+function fresh(){return{date:today(),locked:false,goals:[{t:"",d:false},{t:"",d:false},{t:"",d:false}],metrics:{dials:0,talked:0,hw:0,rejected:0},tasks:[],tags:JSON.parse(JSON.stringify(DEF_TAGS)),leads:[],pipeline:[],wins:[],timer:{on:false,end:null,mode:"work",wm:25,bm:5},activeTab:"today"}}
 function loadS(){try{var s=JSON.parse(localStorage.getItem(SK));if(!s||s.date!==today()){var op=s&&s.pipeline?s.pipeline:[];var ot=s&&s.tasks?s.tasks.filter(function(t){return!t.d}):[];var otg=s&&s.tags?s.tags:JSON.parse(JSON.stringify(DEF_TAGS));var ns=fresh();ns.pipeline=op;ns.tasks=ot;ns.tags=otg;return ns;}return s;}catch(e){return fresh();}}
 function saveS(){localStorage.setItem(SK,JSON.stringify(S))}
 var P=loadP(),S=loadS();
@@ -626,10 +626,13 @@ var tabData=[
 {id:"archive",icon:"\u{1F4C1}",label:"Archive"}
 ];
 var trow=$("div","tab-row");
+var curTab=S.activeTab||"today";
 tabData.forEach(function(td,i){
-var b=$("button","tab-btn"+(i===0?" active":""),td.icon+" "+td.label);
+var isActive=td.id===curTab;
+var b=$("button","tab-btn"+(isActive?" active":""),td.icon+" "+td.label);
 b.dataset.tab=td.id;
 b.addEventListener("click",function(){
+S.activeTab=td.id;saveS();
 trow.querySelectorAll(".tab-btn").forEach(function(x){x.classList.remove("active")});
 b.classList.add("active");
 parent.querySelectorAll(".tab-panel").forEach(function(x){x.classList.remove("active")});
@@ -639,11 +642,11 @@ trow.appendChild(b);
 });
 parent.appendChild(trow);
 
-var p1=$("div","tab-panel active");p1.id="tp-today";renderTodayPanel(p1);parent.appendChild(p1);
-var p2=$("div","tab-panel");p2.id="tp-pipelines";renderPipelinePanel(p2);parent.appendChild(p2);
-var p3=$("div","tab-panel");p3.id="tp-wins";renderWinsPanel(p3);parent.appendChild(p3);
-var p4=$("div","tab-panel");p4.id="tp-templates";renderTemplatesPanel(p4);parent.appendChild(p4);
-var p5=$("div","tab-panel");p5.id="tp-archive";renderArchivePanel(p5);parent.appendChild(p5);
+var p1=$("div","tab-panel"+(curTab==="today"?" active":""));p1.id="tp-today";renderTodayPanel(p1);parent.appendChild(p1);
+var p2=$("div","tab-panel"+(curTab==="pipelines"?" active":""));p2.id="tp-pipelines";renderPipelinePanel(p2);parent.appendChild(p2);
+var p3=$("div","tab-panel"+(curTab==="wins"?" active":""));p3.id="tp-wins";renderWinsPanel(p3);parent.appendChild(p3);
+var p4=$("div","tab-panel"+(curTab==="templates"?" active":""));p4.id="tp-templates";renderTemplatesPanel(p4);parent.appendChild(p4);
+var p5=$("div","tab-panel"+(curTab==="archive"?" active":""));p5.id="tp-archive";renderArchivePanel(p5);parent.appendChild(p5);
 }
 
 function appendStats(sr){
@@ -811,14 +814,16 @@ var lab=$("button","btn btn-sm btn-emerald","+");
 lab.addEventListener("click",function(){S.leads.push({id:id(),name:"",notes:""});saveS();render()});
 lh.appendChild(lab);lc.appendChild(lh);
 S.leads.forEach(function(ld,i){
-var lr=$("div","lead-row");
-var ni=document.createElement("input");ni.type="text";ni.className="lead-name-inp";ni.placeholder="Lead name...";ni.value=ld.name;
+var lr=$("div","lead-row");lr.style.cssText="display:flex;flex-direction:column;gap:4px;position:relative";
+var topRow=$("div","");topRow.style.cssText="display:flex;align-items:center;gap:6px";
+var ni=document.createElement("input");ni.type="text";ni.className="lead-name-inp";ni.placeholder="Lead name...";ni.value=ld.name;ni.style.flex="1";
 ni.addEventListener("input",function(){S.leads[i].name=ni.value;saveS()});
-var nti=document.createElement("input");nti.type="text";nti.className="lead-notes-inp";nti.placeholder="Notes...";nti.value=ld.notes;
-nti.addEventListener("input",function(){S.leads[i].notes=nti.value;saveS()});
 var del=$("button","btn-icon","\u00D7");
 del.addEventListener("click",function(){S.leads.splice(i,1);saveS();render()});
-lr.appendChild(ni);lr.appendChild(nti);lr.appendChild(del);lc.appendChild(lr);
+topRow.appendChild(ni);topRow.appendChild(del);lr.appendChild(topRow);
+var nti=document.createElement("input");nti.type="text";nti.className="lead-notes-inp";nti.placeholder="Notes...";nti.value=ld.notes;nti.style.width="100%";
+nti.addEventListener("input",function(){S.leads[i].notes=nti.value;saveS()});
+lr.appendChild(nti);lc.appendChild(lr);
 });
 var af=$("div","add-row");af.style.marginTop="10px";
 var afn=document.createElement("input");afn.type="text";afn.placeholder="Name...";afn.id="leadNameInp";
