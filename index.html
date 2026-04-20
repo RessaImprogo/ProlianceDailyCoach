@@ -1073,9 +1073,41 @@ updInp.addEventListener("keydown",function(e){if(e.key==="Enter")updBtn.click()}
 addUpdRow.appendChild(updInp);addUpdRow.appendChild(updBtn);
 body.appendChild(addUpdRow);
 
+// Bucket action buttons row
+var btnRow=$("div","");btnRow.style.cssText="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap";
+
+// Rename button
+var renameBtn=$("button","btn btn-sm btn-ghost","\u270E Rename");
+renameBtn.style.cssText="color:var(--sky);border-color:var(--sky);font-size:.65rem";
+renameBtn.addEventListener("click",function(e){e.stopPropagation();
+var ov=$("div","bk-modal");ov.classList.add("open");
+var bx=$("div","bk-modal-box");bx.style.cssText="max-width:400px;text-align:center";
+bx.appendChild($("h3","","Rename Bucket"));bx.firstChild.style.marginBottom="12px";
+var row=$("div","");row.style.cssText="display:flex;gap:8px;margin-bottom:16px";
+var iconInp=document.createElement("input");iconInp.value=def.icon;iconInp.style.cssText="width:52px;text-align:center;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px;font-size:1.2rem;background:var(--cream)";iconInp.maxLength=2;
+var nameInp=document.createElement("input");nameInp.value=def.name;nameInp.style.cssText="flex:1;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-size:.85rem;background:var(--cream);color:var(--text);outline:none";
+row.appendChild(iconInp);row.appendChild(nameInp);bx.appendChild(row);
+var btns2=$("div","");btns2.style.cssText="display:flex;gap:8px;justify-content:center";
+var cancelB=$("button","btn btn-ghost","Cancel");cancelB.addEventListener("click",function(){ov.remove()});
+var saveB=$("button","btn btn-fire","Save");
+saveB.addEventListener("click",function(){
+var newName=nameInp.value.trim();var newIcon=iconInp.value.trim()||def.icon;
+if(!newName){bkToast("Enter a name");return}
+var defIdx=P.bucketDefs.findIndex(function(b){return b.id===def.id});
+if(defIdx>-1){P.bucketDefs[defIdx].name=newName;P.bucketDefs[defIdx].icon=newIcon}
+saveP();ov.remove();render();bkToast("Renamed to \""+newName+"\"");
+});
+nameInp.addEventListener("keydown",function(e){if(e.key==="Enter")saveB.click()});
+btns2.appendChild(cancelB);btns2.appendChild(saveB);bx.appendChild(btns2);
+ov.appendChild(bx);document.body.appendChild(ov);
+ov.addEventListener("click",function(ev){if(ev.target===ov)ov.remove()});
+setTimeout(function(){nameInp.focus();nameInp.select()},100);
+});
+btnRow.appendChild(renameBtn);
+
 // Archive bucket button
 var archBtn=$("button","btn btn-sm btn-ghost","\u2715 Archive bucket");
-archBtn.style.cssText="margin-top:10px;color:var(--rose);border-color:var(--rose);font-size:.65rem";
+archBtn.style.cssText="color:var(--rose);border-color:var(--rose);font-size:.65rem";
 archBtn.addEventListener("click",function(e){e.stopPropagation();
 var ov=$("div","bk-modal");ov.classList.add("open");
 var bx=$("div","bk-modal-box");bx.style.maxWidth="400px";bx.style.textAlign="center";
@@ -1088,7 +1120,8 @@ data.archived=true;data.open=false;saveP();ov.remove();render();bkToast("\""+def
 btns.appendChild(noB);btns.appendChild(yesB);bx.appendChild(btns);
 ov.appendChild(bx);document.body.appendChild(ov);
 ov.addEventListener("click",function(ev){if(ev.target===ov)ov.remove()})});
-body.appendChild(archBtn);
+btnRow.appendChild(archBtn);
+body.appendChild(btnRow);
 
 card.appendChild(body);
 return card;
